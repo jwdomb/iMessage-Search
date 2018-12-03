@@ -1,0 +1,20 @@
+#filters
+	.filter.none No filters
+	each person in people
+		.filter.person('data-handle-id'=person.handle_id)
+			div #{fn.dateformat(person.mindate)} to #{fn.dateformat(person.maxdate)}
+			div #{person.id}
+			div #{person.num}
+
+#chats
+	each cluster in messages
+		.conversation('data-handle-id'=cluster[0].handle_id,'data-rank'=cluster[0].rank)
+			each message, i in cluster
+				if(i===0)
+					div.date #{fn.dateformat(message.date)}
+					div #{message.handle_id}
+				div(class=message.is_from_me?'from':'to') 
+					if (message.text)
+						span !{query ? fn.escapeHTML(message.text).replace(new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')+')', 'ig'), '<span class="query">$1</span>') : message.text}
+					else
+						span {{non-text message}}

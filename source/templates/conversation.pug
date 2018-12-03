@@ -1,0 +1,13 @@
+each message, i in messages
+	.message(class=message.is_from_me?'from':'to', 'data-rank'=message.rank)
+		div.date #{fn.dateformat(message.date)}
+		if(message.filename && message.mime_type)
+			div.attachment(data-mime-type=message.mime_type)
+				if(message.mime_type.match(/^image\//))
+					img(src='http://localhost:8891/static/file?fname='+message.filename)
+				else if(message.mime_type.match(/^video\//))
+					video(controls, src='http://localhost:8891/static/file?fname='+message.filename)
+				else
+					span Attachment: #[a(href='http://localhost:8891/static/file?fname='+message.filename) #{message.filename.split('/').pop()}]
+		if(message.text && !message.text.match(/^[/s\uFFFC]*$/))
+			div.text !{query ? fn.escapeHTML(message.text).replace(new RegExp('('+query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')+')', 'ig'), '<span class="query">$1</span>') : message.text}
